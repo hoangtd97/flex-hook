@@ -1,5 +1,7 @@
 # Maximum Flexible Hook
 
+[![npm](https://img.shields.io/badge/npm-1.0.4-green.svg)](https://www.npmjs.com/package/flex-hook)
+
 Adding hook at everywhere, with every type, every interface, run on every mode to your function.
 
 ## Example
