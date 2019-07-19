@@ -9,6 +9,9 @@ function HookStore(hooks) {
 
   const Public = {
     add (type, hook) {
+      if (type && typeof type === 'object') {
+        return Public.addMap(type);
+      }
       if (!Array.isArray(Private.hooks[type])) {
         Private.hooks[type] = [];
       }
@@ -19,14 +22,14 @@ function HookStore(hooks) {
       return Public;
     },
     addMap (hooksMap) {
-      for (let type of hooksMap) {
-        const hooks = hooksMap[type];
+      for (let type in hooksMap) {
+        let hooks = hooksMap[type];
 
         if (typeof hooks === 'function') {
           hooks = [hooks];
         }
         if (!Array.isArray(hooks)) {
-          throw new Error(`Hook of type ${type} expected a function or array, but received ${hooks}`);
+          throw new Error(`Hook of type [${type}] expected a function or array, but received [${hooks}]`);
         }
         for (let hook of hooks) {
           Public.add(type, hook);

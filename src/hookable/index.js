@@ -21,7 +21,9 @@ function HookableFactory(DI) {
       const _hooks = hookStore.get(type);
       const _invoker = _getInvoker(invoker);
 
-      return _invoker(_hooks, args, options);
+      if (_hooks) {
+        return _invoker(_hooks, args, options);
+      }
     }
 
     function _getInvoker (invoker) {
@@ -33,7 +35,7 @@ function HookableFactory(DI) {
           return DI.invokers[invoker];
         }
       }
-      throw new Error(`Invalid invoker ${invoker}`);
+      throw new Error(`Invalid invoker [${invoker}]`);
     }
 
     function _clone() {

@@ -9,13 +9,11 @@ const invokers = {
         }
         catch (err) {
           if (Array.isArray(err.reactions)) {
-            if (err.reactions.includes('CONTINUE')) {
-              continue;
-            }
             if (err.reactions.includes('BREAK')) {
-              break;
+              return;
             }
           }
+          throw err;
         }
       }
     }
@@ -39,23 +37,24 @@ const invokers = {
         }
         catch (err) {
           if (Array.isArray(err.reactions)) {
-            if (err.reactions.includes('CONTINUE')) {
-              continue;
-            }
             if (err.reactions.includes('BREAK')) {
-              break;
+              return;
             }
           }
+          throw err;
         }
       }
     }
   },
   middleware (hooks, args, callback) {
+    if (typeof callback !== 'function') {
+      throw new Error(`callback expected a function, but received [${callback}]`);
+    }
 
     function iterate(index) {
 
-      if (index === hooks.length) {
-        return callback && callback(null, ...args);
+      if (index >= hooks.length) {
+        return callback(null);
       }
       
       let hook = hooks[index];

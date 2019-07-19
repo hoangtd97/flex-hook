@@ -1,15 +1,17 @@
 {
   "name": "flex-hook",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Flexible hook",
   "main": "index.js",
   "repository": "https://github.com/hoangtd97/flex-hook.git",
   "author": "Tran Dinh Hoang",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "^6.1.4"
+    "delay": "^4.3.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1"
   },
   "scripts": {
-    "test" : "mocha test/**/*.spec.js --exit"
+    "test": "mocha test/**/*.spec.js --exit"
   }
 }

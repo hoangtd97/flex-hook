@@ -14,7 +14,8 @@ function createHookExtender(types) {
   let alias_types = types;
 
   if (Array.isArray(types)) {
-    alias_types = types.map(type => Object({ [type] : type }));
+    alias_types = {};
+    types.forEach(type => alias_types[type] = type);
   }
   if (!(alias_types && typeof alias_types === 'object')) {
     throw new Error(`Types expected an array or map, but received ${alias_types}`);
