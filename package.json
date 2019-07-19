@@ -7,11 +7,13 @@
   "author": "Tran Dinh Hoang",
   "license": "MIT",
   "devDependencies": {
+    "coveralls": "^3.0.5",
     "delay": "^4.3.0",
     "mocha": "^6.1.4",
     "nyc": "^14.1.1"
   },
   "scripts": {
-    "test": "mocha test/**/*.spec.js --exit"
+    "test" : "mocha test/**/*.spec.js",
+    "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
   }
 }
