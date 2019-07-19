@@ -2,7 +2,7 @@
 Adding hook at everywhere, with every type, every interface, run on every mode to your function.
 
 [![Build Status](https://travis-ci.org/hoangtd97/flex-hook.svg?branch=master)](https://travis-ci.org/hoangtd97/flex-hook)
-[![npm](https://img.shields.io/badge/npm-flex--hook-green.svg)](https://www.npmjs.com/package/flex-hook)
+[![npm](https://img.shields.io/npm/v/flex-hook.svg)](https://www.npmjs.com/package/flex-hook)
 [![Coverage Status](https://coveralls.io/repos/github/hoangtd97/flex-hook/badge.svg?branch=master)](https://coveralls.io/github/hoangtd97/flex-hook?branch=master)
 
 ## Example
