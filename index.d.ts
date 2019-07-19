@@ -28,7 +28,7 @@
  * 
  * f2();
  */
-export default function Hookable (factory : Factory, options : HookableOptions<any>) : Hookable;
+export default function Hookable (factory : Factory, options ?: HookableOptions<any>) : Hookable;
 
 export function HookableFactory (dependencies : HookableFactoryDependencies<any>): Function;
 
@@ -63,9 +63,9 @@ export interface KeyVal<T> {
  *    after : it => {}
  * });
  */
-export type addHook = (type : string | KeyVal<Function | Function[]>, hook ?: Function) => HookStore;
+export type addHook<T> = (type : string | KeyVal<Function | Function[]>, hook ?: Function) => T;
 export interface DefaultExtendedMethods { 
-  hook : addHook; 
+  hook : addHook<Hookable>; 
   clone : () => Hookable;
 }
 
@@ -95,7 +95,7 @@ export type InvokeHook = (type: string, args: any[], invoker: InvokerCode | Invo
  *    return await Promise.all(hooks.map(async hook => hook(...args)));
  * }
  */
-export type Invoker<T> = (hooks: Function[], args: any[], options: T) => void;
+export type Invoker<T> = (hooks: Function[], args: any[], options ?: T) => void;
 
 export interface HookableOptions<T> {
   hookStore ?: HookStore;
@@ -131,7 +131,7 @@ export type HookExtender<T> = ({ func, hookStore } : {
 export type CreateHookExtender<T> = (type : KeyVal<string> | string[]) => HookExtender<T>;
 
 export interface HookStore {
-  add : addHook,
+  add : addHook<HookStore>,
   /**
    * Get hooks by type
    * @example
