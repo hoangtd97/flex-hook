@@ -34,6 +34,6 @@ describe('HookStore', () => {
   it ('should throw error when pass invalid input', () => {
     assert.throws(() => {
       HookStore().add({ before : 'INVALID_INPUT' })
-    }, 'Hook of type [before] expected a function or array, but received [INVALID_INPUT]');
+    }, { message : 'Hook of type [before] expected a function or array, but received [INVALID_INPUT]' });
   })
 })

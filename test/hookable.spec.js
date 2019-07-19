@@ -271,7 +271,7 @@ describe('Hookable', () => {
       hook('pre', [it], '?');
     });
 
-    assert.throws(f, 'Invalid invoker [?]');
+    assert.throws(f, { message : 'Invalid invoker [?]' });
   })
 });
 
