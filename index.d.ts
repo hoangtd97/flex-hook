@@ -1,9 +1,5 @@
-'use strict';
+// ---------------------- Exported Values -------------------- //
 
-export interface HookableOptions {
-  hookStore: HookStore;
-  extender : HookExtender;
-}
 
 /**
  * Create new hookable function
@@ -23,15 +19,6 @@ export interface HookableOptions {
  * .hook('before', async it => it.user = await fetchUser(it.user_id));
  * .hook('after', it => it.time = Date.now() - it.started_at);
  * 
- * // or use map, usually via config
- * f.hook({
- *  before : [
- *    async it => it.started_at = Date.now(),
- *    async it => it.user = await fetchUser(it.user_id)
- *  ],
- *  after : it => it.time = Date.now() - it.started_at
- * });
- * 
  * f();
  * 
  * // Reuse & Extend by cloning 
@@ -41,7 +28,56 @@ export interface HookableOptions {
  * 
  * f2();
  */
-export default function Hookable(factory: (hook: InvokeHook) => Function, options : HookableOptions): Hookable;
+export default function Hookable (factory : Factory, options : HookableOptions<any>) : Hookable;
+
+export function HookableFactory (dependencies : HookableFactoryDependencies<any>): Function;
+
+export const HookStore : createHookStore;
+
+export const extender : HookExtender<{ hook : Function }> & { create : CreateHookExtender<any> }
+
+export namespace invokers {
+  export const synchronous : Invoker<void>;
+  export const parallel : Invoker<void>;
+  export const sequence : Invoker<void>;
+  export const middleware : Invoker<(err : any, result : any) => void>;
+} 
+
+// ---------------------- Exported Types -------------------- //
+
+export interface KeyVal<T> {
+  [key : string] : T
+}
+
+/**
+ * Add one or more hook
+ * @example
+ * 
+ * hook('before', it => {});
+ * 
+ * hook({
+ *    before : [
+ *      it => {},
+ *      it => {},
+ *    ],
+ *    after : it => {}
+ * });
+ */
+export type addHook = (type : string | KeyVal<Function | Function[]>, hook ?: Function) => HookStore;
+export interface DefaultExtendedMethods { 
+  hook : addHook; 
+  clone : () => Hookable;
+}
+
+export interface HookableFactoryDependencies<T> {
+  HookStore : createHookStore,
+  invokers  : KeyVal<Invoker<any>>,
+  extender  : HookExtender<T>
+}
+
+export type InvokerCode = 'synchronous' | 'parallel' | 'sequence' | 'middleware';
+
+export type Factory = (hook : InvokeHook) => Function;
 
 /**
  * @example
@@ -50,30 +86,52 @@ export default function Hookable(factory: (hook: InvokeHook) => Function, option
  * hook('before', it, 'synchronous');
  * hook('before', it, 'parallel', { limit : 5 });
  */
-export type InvokeHook = (type: string, args: any[], invoker: string | Function, options: any) => any;
+export type InvokeHook = (type: string, args: any[], invoker: InvokerCode | Invoker<any>, options ?: any) => any;
 
+/**
+ * @example
+ * 
+ * const parallelInvoker = async function (hooks, args, options) {
+ *    return await Promise.all(hooks.map(async hook => hook(...args)));
+ * }
+ */
+export type Invoker<T> = (hooks: Function[], args: any[], options: T) => void;
+
+export interface HookableOptions<T> {
+  hookStore ?: HookStore;
+  extender  ?: HookExtender<T>;
+  clone     ?: boolean;
+}
+
+export type HookExtender<T> = ({ func, hookStore } : {
+  func      : Function, 
+  hookStore : HookStore,
+}) => Hookable<T>;
+
+/**
+ * @example 
+ * 
+ * const factory = hook => {
+ *    const it = {};
+ *    hook('before', [it], 'synchronous');
+ *    //...
+ *    hook('after', [it], 'synchronous');
+ * }
+ * 
+ * const f1 = Hookable(factory, { extender : Hookable.extender.create(['before', 'after']) });
+ * 
+ * f1.before(it => {});
+ * f1.after(it => {});
+ * 
+ * const f2 = Hookable(factory, { extender : Hookable.extender.create({ pre : 'before', post : 'after' }) });
+ * 
+ * f2.pre(it => {});
+ * f2.post(it => {});
+ */
+export type CreateHookExtender<T> = (type : KeyVal<string> | string[]) => HookExtender<T>;
 
 export interface HookStore {
-  /**
-   * Add one hook
-   * @example
-   * 
-   * hookStore.add('before', it => {});
-   */
-  add(type: string, hook: Function): HookStore;
-  /**
-   * Add some hooks map by type
-   * @example
-   * 
-   * hookStore.add({
-   *    before : [
-   *      it => {},
-   *      it => {},
-   *    ],
-   *    after : it => {}
-   * });
-   */
-  add(hooks : Object<string, Function | Function []>): HookStore;
+  add : addHook,
   /**
    * Get hooks by type
    * @example
@@ -103,45 +161,18 @@ export interface HookStore {
 export type createHookStore = (hookStore : HookStore) => HookStore;
 
 /**
- * @example
- * 
- * const parallelInvoker = async function (hooks, args, options) {
- *    return await Promise.all(hooks.map(async hook => hook(...args)));
- * }
- */
-export type Invoker = (hooks: Function[], args: any[], options: any) => void;
-
-/**
  * Your hookable interface depend on which extender was used.
  * @example
  * const extender = (f, store) => {
- *    f.use = (hook) => store.add('after', hook);
- * }
- * 
- * const f = Hookable(hook => () => {
- *    const it = {};
- *    //...
- *    hook('after', [it], 'synchronous');
- * }, { extender });
- * 
- * f.use(it => {});
- */
-export type Hookable<T> = Function & T;
-
-export type HookExtender<T> = (
-  func      : Function, 
-  factory   : Function,
-  hookStore : HookStore,
-  HookStore : createHookStore,
-  Hookable  : Hookable
-) => Hookable<T>;
-
-export const extender : HookExtender<{ hook : Function }> & { create : (types : Object<string, string> | string[]) => HookExtender };
-
-export interface HookableFactoryDependencies {
-  HookStore : createHookStore,
-  invokers  : Object<string, Invoker>,
-  extender  : HookExtender
-}
-
-export function HookableFactory(dependencies : HookableFactoryDependencies): Hookable;
+  *    f.use = (hook) => store.add('after', hook);
+  * }
+  * 
+  * const f = Hookable(hook => () => {
+  *    const it = {};
+  *    //...
+  *    hook('after', [it], 'synchronous');
+  * }, { extender });
+  * 
+  * f.use(it => {});
+  */
+ export type Hookable<T = DefaultExtendedMethods> = Function & T;

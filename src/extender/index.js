@@ -1,8 +1,5 @@
 'use strict';
 
-/**
- * Add hook() to func
- */
 function DefaultHookExtender({ func, hookStore }) {
   
   func.hook = function addHook(...args) {
@@ -13,29 +10,6 @@ function DefaultHookExtender({ func, hookStore }) {
   return func;
 }
 
-/**
- *  
- * @param {Object<string, string> | string[]} types
- * 
- * @example 
- * 
- * const factory = hook => {
- *    const it = {};
- *    hook('before', [it], 'synchronous');
- *    //...
- *    hook('after', [it], 'synchronous');
- * }
- * 
- * const f1 = Hookable(factory, { extender : Hookable.extender.create(['before', 'after']) });
- * 
- * f1.before(it => {});
- * f1.after(it => {});
- * 
- * const f2 = Hookable(factory, { extender : Hookable.extender.create({ pre : 'before', post : 'after' }) });
- * 
- * f2.pre(it => {});
- * f2.post(it => {});
- */
 function createHookExtender(types) {
   let alias_types = types;
 
