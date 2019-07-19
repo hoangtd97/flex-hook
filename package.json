@@ -1,0 +1,15 @@
+{
+  "name": "hook-it",
+  "version": "1.0.0",
+  "description": "Flexible hook",
+  "main": "index.js",
+  "repository": "https://github.com/hoangtd97/hook-it.git",
+  "author": "Tran Dinh Hoang",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^6.1.4"
+  },
+  "scripts": {
+    "test" : "mocha test/**/*.spec.js --exit"
+  }
+}
