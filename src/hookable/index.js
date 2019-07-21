@@ -1,6 +1,12 @@
 'use strict';
 
+const extender              = require('../extender');
+const { FunctionHookStore } = require('../hook-stores');
+const invokers              = require('../invokers');
+
 function HookableFactory(DI) {
+
+  DI = Object.assign({ extender, HookStore : FunctionHookStore, invokers }, DI);
 
   return function Hookable(factory, options={}) {
 

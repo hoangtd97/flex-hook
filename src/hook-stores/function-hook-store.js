@@ -1,6 +1,10 @@
 'use strict';
 
-function HookStore(hooks) {
+/**
+ * Store hook which just a function
+ * @param {Object<string, function>} hooks 
+ */
+function FunctionHookStore(hooks) {
 
   const Private = {
     /** @type {Object<string, Function[]>} */
@@ -47,11 +51,11 @@ function HookStore(hooks) {
         new_hooks[type] = Array.from(Private.hooks[type]);
       }
 
-      return HookStore(new_hooks);
+      return FunctionHookStore(new_hooks);
     }
   };
 
   return Public;
 }
 
-module.exports = HookStore;
+module.exports = { FunctionHookStore };

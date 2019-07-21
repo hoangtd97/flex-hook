@@ -32,7 +32,10 @@ export default function Hookable (factory : Factory, options ?: HookableOptions<
 
 export function HookableFactory (dependencies : HookableFactoryDependencies<any>): Function;
 
-export const HookStore : createHookStore;
+export namespace HookStores {
+  export const FunctionHookStore : createHookStore;
+  export const ObjectHookStore : createHookStore;
+};
 
 export const extender : HookExtender<{ hook : Function }> & { create : CreateHookExtender<any> }
 
@@ -86,7 +89,7 @@ export type Factory = (hook : InvokeHook) => Function;
  * hook('before', it, 'synchronous');
  * hook('before', it, 'parallel', { limit : 5 });
  */
-export type InvokeHook = (type: string, args: any[], invoker: InvokerCode | Invoker<any>, options ?: any) => any;
+export type InvokeHook = (type: string | any, args: any[], invoker: InvokerCode | Invoker<any>, options ?: any) => any;
 
 /**
  * @example
@@ -138,7 +141,7 @@ export interface HookStore {
    * 
    * hookStore.get('before') => [it => {}, it => {}]
    */
-  get(type: string): Function [];
+  get(type: string | any): Function [];
   /**
    * clone store
    * @example

@@ -273,5 +273,33 @@ describe('Hookable', () => {
 
     assert.throws(f, { message : 'Invalid invoker [?]' });
   })
+
+  it ('should allow use ObjectHookStore to invoke hooks via codes', () => {
+    const { HookableFactory, HookStores } = Hookable;
+
+    const ObjectHookable = HookableFactory({ HookStore : HookStores.ObjectHookStore });
+    
+    const hookA = { code : 'A', do : it => it.result.push('A') };
+    const hookB = { code : 'B', do : it => it.result.push('B') };
+    const hookC = { code : 'C', do : it => it.result.push('C') };
+
+    const f = ObjectHookable(hook => (it, { before = '*' }={}) => {
+      hook({ before }, [it], 'synchronous');
+
+      return it;
+    });
+
+    f.hook({ before : [hookA, hookB, hookC] });
+
+    assert.deepEqual( 
+      f({ result : [] }).result, 
+      ['A', 'B', 'C']
+    );
+
+    assert.deepEqual( 
+      f({ result : [] }, { before : ['A', 'C'] }).result, 
+      ['A', 'C']
+    );
+  })
 });
 

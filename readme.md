@@ -5,9 +5,19 @@ Adding hook at everywhere, with every type, every interface, run on every mode t
 [![npm](https://img.shields.io/npm/v/flex-hook.svg)](https://www.npmjs.com/package/flex-hook)
 [![Coverage Status](https://coveralls.io/repos/github/hoangtd97/flex-hook/badge.svg?branch=master)](https://coveralls.io/github/hoangtd97/flex-hook?branch=master)
 
+- [Example](#Example)
+  - [Assume you have an order :](#Assume-you-have-an-order-)
+  - [The following function generates excel rows for each order item, it does nothing except calling hooks :](#The-following-function-generates-excel-rows-for-each-order-item-it-does-nothing-except-calling-hooks-)
+  - [Then you can add some hooks :](#Then-you-can-add-some-hooks-)
+  - [Add it works :](#Add-it-works-)
+  - [Also, support cloning to reusing and extending :](#Also-support-cloning-to-reusing-and-extending-)
+  - [And custom hookable interface with extender :](#And-custom-hookable-interface-with-extender-)
+- [Topics](#Topics)
+  - [Allow client choose which hooks will be invoked with ObjectHookStore](#Allow-client-choose-which-hooks-will-be-invoked-with-ObjectHookStore)
+
 ## Example
 
-* Assume you have an order :
+### Assume you have an order :
 
 ```js
 const order = {
@@ -29,7 +39,7 @@ const order = {
 };
 ```
 
-* The following function generates excel rows for each order item, it does nothing except calling hooks : 
+### The following function generates excel rows for each order item, it does nothing except calling hooks : 
 
 ```js
 function generateRowsFactory(hook) {
@@ -57,7 +67,7 @@ function generateRowsFactory(hook) {
 const generateRows = Hookable(generateRowsFactory);
 ```
 
-* Then you can add some hooks :
+### Then you can add some hooks :
 
 ```js
 generateRows
@@ -87,7 +97,7 @@ generateRows
   });
 ```
 
-* Add it works :
+### Add it works :
 
 ```js
 const summary = { total_price : 0, total_quantity : 0 };
@@ -106,7 +116,7 @@ assert.deepEqual(rows, expectedRows);
 assert.deepEqual(summary, expectedSummary);
 ```
 
-* Also, support cloning to reusing and extending :
+### Also, support cloning to reusing and extending :
 
 ```js
 const generateRowsWithCustomer = generateRows.clone();
@@ -132,7 +142,7 @@ const expectedRowsWithCustomer = [
 assert.deepEqual(rowWithCustomer, expectedRowsWithCustomer);
 ```
 
-* And custom hookable interface with extender :
+### And custom hookable interface with extender :
 
 ```js
 const extender = ({ func, hookStore }) => {
@@ -151,7 +161,7 @@ const extender = ({ func, hookStore }) => {
   return func;
 }
 
-// or
+// or use built-in creator
 const extender = Hookable.extender.create({ pre : 'before', post : 'after', each : 'eachItem' });
 
 const generateRowsWithCustomExtender = Hookable(generateRowsFactory, { extender });
@@ -166,6 +176,39 @@ generateRowsWithCustomExtender
 .post(function calSummary(it) {
   //...
 });
+```
+
+## Topics
+
+### Allow client choose which hooks will be invoked with ObjectHookStore
+
+```js
+const { HookableFactory, HookStores } = require('flex-hook');
+
+const Hookable = HookableFactory({ HookStore : HookStores.ObjectHookStore });
+
+const hookA = { code : 'A', do : it => it.result.push('A') };
+const hookB = { code : 'B', do : it => it.result.push('B') };
+const hookC = { code : 'C', do : it => it.result.push('C') };
+
+const f = Hookable(hook => (it, { before = '*' }={}) => {
+
+  hook({ before }, [it], 'synchronous');
+
+  return it;
+});
+
+f.hook({ before : [hookA, hookB, hookC] });
+
+assert.deepEqual( 
+  f({ result : [] }).result, 
+  ['A', 'B', 'C']
+);
+
+assert.deepEqual( 
+  f({ result : [] }, { before : ['A', 'C'] }).result, 
+  ['A', 'C']
+);
 ```
 
 # Hope you enjoy it!
