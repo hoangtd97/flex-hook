@@ -29,6 +29,9 @@ function ObjectHookStore(hooks) {
       if (type && typeof type === 'object') {
         return Public.addMap(type);
       }
+      if (typeof hook === 'function' && !hook.do && hook.name) {
+        hook = { do : hook, code : hook.name };
+      }
       if (Public.isValidHook(hook)) {
         if (!Array.isArray(Private.hooks[type])) {
           Private.hooks[type] = [];
