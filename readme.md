@@ -5,19 +5,21 @@ Adding hook at everywhere, with every type, every interface, run on every mode t
 [![npm](https://img.shields.io/npm/v/flex-hook.svg)](https://www.npmjs.com/package/flex-hook)
 [![Coverage Status](https://coveralls.io/repos/github/hoangtd97/flex-hook/badge.svg?branch=master)](https://coveralls.io/github/hoangtd97/flex-hook?branch=master)
 
-- [Example](#Example)
-  - [Assume you have an order :](#Assume-you-have-an-order-)
-  - [The following function generates excel rows for each order item, it does nothing except calling hooks :](#The-following-function-generates-excel-rows-for-each-order-item-it-does-nothing-except-calling-hooks-)
-  - [Then you can add some hooks :](#Then-you-can-add-some-hooks-)
-  - [Add it works :](#Add-it-works-)
-  - [Also, support cloning to reusing and extending :](#Also-support-cloning-to-reusing-and-extending-)
-  - [And custom hookable interface with extender :](#And-custom-hookable-interface-with-extender-)
-- [Topics](#Topics)
-  - [Allow client choose which hooks will be invoked with ObjectHookStore](#Allow-client-choose-which-hooks-will-be-invoked-with-ObjectHookStore)
+- [Maximum Flexible Hook](#maximum-flexible-hook)
+  - [Example](#example)
+    - [Assume you have an order](#assume-you-have-an-order)
+    - [The following function generates excel rows for each order item, it does nothing except calling hooks](#the-following-function-generates-excel-rows-for-each-order-item-it-does-nothing-except-calling-hooks)
+    - [Then you can add some hooks](#then-you-can-add-some-hooks)
+    - [Add it works](#add-it-works)
+    - [Also, support cloning to reusing and extending](#also-support-cloning-to-reusing-and-extending)
+    - [And custom hookable interface with extender](#and-custom-hookable-interface-with-extender)
+  - [Topics](#topics)
+    - [Allow client choose which hooks will be invoked with ObjectHookStore](#allow-client-choose-which-hooks-will-be-invoked-with-objecthookstore)
+- [Hope you enjoy it!](#hope-you-enjoy-it)
 
 ## Example
 
-### Assume you have an order :
+### Assume you have an order
 
 ```js
 const order = {
@@ -39,7 +41,7 @@ const order = {
 };
 ```
 
-### The following function generates excel rows for each order item, it does nothing except calling hooks : 
+### The following function generates excel rows for each order item, it does nothing except calling hooks
 
 ```js
 function generateRowsFactory(hook) {
@@ -67,7 +69,7 @@ function generateRowsFactory(hook) {
 const generateRows = Hookable(generateRowsFactory);
 ```
 
-### Then you can add some hooks :
+### Then you can add some hooks
 
 ```js
 generateRows
@@ -97,7 +99,7 @@ generateRows
   });
 ```
 
-### Add it works :
+### Add it works
 
 ```js
 const summary = { total_price : 0, total_quantity : 0 };
@@ -116,7 +118,7 @@ assert.deepEqual(rows, expectedRows);
 assert.deepEqual(summary, expectedSummary);
 ```
 
-### Also, support cloning to reusing and extending :
+### Also, support cloning to reusing and extending
 
 ```js
 const generateRowsWithCustomer = generateRows.clone();
@@ -142,7 +144,7 @@ const expectedRowsWithCustomer = [
 assert.deepEqual(rowWithCustomer, expectedRowsWithCustomer);
 ```
 
-### And custom hookable interface with extender :
+### And custom hookable interface with extender
 
 ```js
 const extender = ({ func, hookStore }) => {
