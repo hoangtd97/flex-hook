@@ -301,5 +301,27 @@ describe('Hookable', () => {
       ['A', 'C']
     );
   })
+
+  it ('should allow client invoke hooks', () => {
+
+    const f = Hookable(hook => () => {
+
+      const it = { hooked : [] };
+
+      hook('before', [it], 'synchronous');
+
+      return it;
+    }, { addInvokeHook : true });
+
+    f.hook('before', it => it.hooked.push('A'));
+    f.hook('before', it => it.hooked.push('B'));
+    f.hook('before', it => it.hooked.push('C'));
+
+    const it = { hooked : [] };
+
+    f.invokeHook('before', [it], 'synchronous');
+
+    assert.deepEqual(it.hooked, ['A', 'B', 'C']);
+  })
 });
 

@@ -8,15 +8,20 @@ function HookableFactory(DI) {
 
   DI = Object.assign({ extender, HookStore : FunctionHookStore, invokers }, DI);
 
-  return function Hookable(factory, options={}) {
+  return function Hookable(factory, options) {
+
+    options = Object.assign({ addClone : true, addInvokeHook : false }, options);
 
     let hookStore = options.hookStore || DI.HookStore();
     let extender  = options.extender || DI.extender;
 
     const func = factory(_invokeHook);
 
-    if (options.clone === undefined || options.clone) {
+    if (options.addClone) {
       func.clone = _clone;
+    }
+    if (options.addInvokeHook) {
+      func.invokeHook = _invokeHook;
     }
 
     extender({ func, factory, hookStore, Hookable, ...DI });

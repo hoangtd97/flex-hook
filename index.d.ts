@@ -68,8 +68,7 @@ export interface KeyVal<T> {
  */
 export type addHook<T> = (type : string | KeyVal<Function | Function[]>, hook ?: Function) => T;
 export interface DefaultExtendedMethods { 
-  hook : addHook<Hookable>; 
-  clone : () => Hookable;
+  hook  : addHook<Hookable>;
 }
 
 export interface HookableFactoryDependencies<T> {
@@ -101,9 +100,12 @@ export type InvokeHook = (type: string | any, args: any[], invoker: InvokerCode 
 export type Invoker<T> = (hooks: Function[], args: any[], options ?: T) => void;
 
 export interface HookableOptions<T> {
-  hookStore ?: HookStore;
-  extender  ?: HookExtender<T>;
-  clone     ?: boolean;
+  hookStore     ?: HookStore;
+  extender      ?: HookExtender<T>;
+  /** add clone() method to hookable */
+  addClone      ?: boolean;
+  /** add invokeHook() method to hookable */
+  addInvokeHook ?: boolean;
 }
 
 export type HookExtender<T> = ({ func, hookStore } : {
@@ -178,4 +180,7 @@ export type createHookStore = (hookStore : HookStore) => HookStore;
   * 
   * f.use(it => {});
   */
- export type Hookable<T = DefaultExtendedMethods> = Function & T;
+ export type Hookable<T = DefaultExtendedMethods> = Function & T & {
+  clone ?: () => Hookable;
+  invokeHook ?: InvokeHook;
+ };
