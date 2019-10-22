@@ -53,22 +53,6 @@ function HookableFactory(DI) {
       return Hookable(factory, { ...options, hookStore : hookStore.clone() });
     }
     
-    function testReduceCoverage() {
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-      console.log('[TEST] reduce coverage');
-    }
   }
 }
 
